@@ -1,29 +1,67 @@
 const path = require('path');
+const webpack = require('webpack');
 
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
-  template: './public/index.html',
-  filename: 'index.html',
-  inject: 'body'
-})
-
-module.exports = function(webpackConfig){
-  webpackConfig.babel.plugins.push('transform-runtime');
-  webpackConfig.babel.plugins.push(['import', {
-    libraryName: 'antd',
-    style: 'css',
-  }]),
-  entry: './src/index.js',
+module.exports = {
+  entry: path.resolve(__dirname, 'src/index.js'),
   output: {
-    path: path.resolve('dist'),
+    path: path.resolve(__dirname, 'dist'),
     filename: 'index_bundle.js'
   },
   module: {
-    loaders: [
-      { test: /\.scss$/, loaders : ["style-loader", "css-loader", "sass-loader"], exclude: /node_modules/ },
-      { test: /\.js$/, loader: 'babel-loader', exclude: /node_modules/ },
-      { test: /\.jsx$/, loader: 'babel-loader', exclude: /node_modules/ }
+    rules: [
+      {
+        test: /\.css$/,
+        use: [
+          {
+            loader: "style-loader"
+          },
+          {
+            loader: "css-loader",
+            options: {
+              modules: true
+            }
+          }
+        ]
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          {
+            loader: "style-loader"
+          },
+          {
+            loader: "css-loader",
+            options: {
+              modules: true
+            }
+          },
+          {
+            loader: "sass-loader",
+            options: {
+              modules: true
+            }
+          }
+        ]
+      },
+      {
+        test: /\.js$/,
+        loader: 'babel-loader',
+        options:{
+          presets: ['es2015', 'react']
+        }
+      },
+      {
+        test: /\.jsx$/,
+        loader: 'babel-loader',
+        options:{
+          presets: ['es2015', 'react']
+        }
+      }
     ]
   },
-  plugins: [HtmlWebpackPluginConfig]
+  devServer: {
+    contentBase: path.join(__dirname, "public"),
+    compress: true,
+    port: 9000
+  }  
 }
