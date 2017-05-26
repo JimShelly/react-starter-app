@@ -7,7 +7,12 @@ const HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
   inject: 'body'
 })
 
-module.exports = {
+module.exports = function(webpackConfig){
+  webpackConfig.babel.plugins.push('transform-runtime');
+  webpackConfig.babel.plugins.push(['import', {
+    libraryName: 'antd',
+    style: 'css',
+  }]),
   entry: './src/index.js',
   output: {
     path: path.resolve('dist'),
